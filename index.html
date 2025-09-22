@@ -1,0 +1,2010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mind Well</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .user-profile {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .profile-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .profile-info h3 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .profile-info p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .journey-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .step-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .step-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            margin-right: 15px;
+            color: white;
+        }
+
+        .step-title {
+            color: #333;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .step-description {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .step-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .step-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .step-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .main-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            min-height: 500px;
+        }
+
+        /* Assessment Quiz Styles */
+        .quiz-container {
+            display: none;
+        }
+
+        .quiz-container.active {
+            display: block;
+        }
+
+        .quiz-intro {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .quiz-intro h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .quiz-intro p {
+            color: #666;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+
+        .question {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .question h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .scale-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .scale-options {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            gap: 5px;
+        }
+
+        .scale-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+
+        .scale-option input[type="radio"] {
+            appearance: none;
+            width: 30px;
+            height: 30px;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .scale-option input[type="radio"]:checked {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: #667eea;
+        }
+
+        .scale-option input[type="radio"]:checked::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .scale-option label {
+            margin-top: 5px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+
+        .quiz-buttons {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results-container {
+            display: none;
+            text-align: center;
+        }
+
+        .results-container.active {
+            display: block;
+        }
+
+        .score-display {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            min-width: 150px;
+        }
+
+        .status-good {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .status-not-bad {
+            background: linear-gradient(45deg, #FFC107, #FFB300);
+            color: white;
+        }
+
+        .status-risky {
+            background: linear-gradient(45deg, #FF9800, #F57C00);
+            color: white;
+        }
+
+        .status-extremely-bad {
+            background: linear-gradient(45deg, #F44336, #D32F2F);
+            color: white;
+        }
+
+        .report {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .report h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .report p {
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .recommendations {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #2196F3;
+            margin-top: 20px;
+        }
+
+        .recommendations h4 {
+            color: #1976D2;
+            margin-bottom: 10px;
+        }
+
+        .recommendations ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .recommendations li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .recommendations li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .warning {
+            background: #ffebee;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #F44336;
+            margin-top: 20px;
+        }
+
+        .warning h4 {
+            color: #C62828;
+            margin-bottom: 10px;
+        }
+
+        /* Dashboard sections */
+        .exercises-section, .chatbot-section, .counselor-section {
+            display: none;
+        }
+
+        .exercise-grid, .counselor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .exercise-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid #28a745;
+        }
+
+        .counselor-card {
+            background: #fff5f5;
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid #dc3545;
+        }
+
+        .chat-container {
+            height: 400px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            outline: none;
+            font-size: 1em;
+        }
+
+        .chat-send {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .chat-message {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 80%;
+        }
+
+        .user-message {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+        }
+
+        .bot-message {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .navigation-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .analytics-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .admin-dashboard {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .article-link {
+            display: inline-block;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 8px;
+            padding: 5px 0;
+            border-bottom: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .article-link:hover {
+            color: #764ba2;
+            border-bottom-color: #764ba2;
+            transform: translateX(5px);
+        }
+
+        .article-link::before {
+            content: '🔗 ';
+            margin-right: 5px;
+        }
+
+        .hobby-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .hobby-option:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+
+        .hobby-option input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .hobby-option.selected {
+            background: #e3f2fd;
+            border-color: #667eea;
+            color: #1976d2;
+        }
+
+        .challenge-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #28a745;
+            transition: all 0.3s ease;
+        }
+
+        .challenge-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .challenge-card.selected {
+            border-left-color: #667eea;
+            background: #e3f2fd;
+        }
+
+        .challenge-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .difficulty-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .difficulty-easy { background: #d4edda; color: #155724; }
+        .difficulty-medium { background: #fff3cd; color: #856404; }
+        .difficulty-hard { background: #f8d7da; color: #721c24; }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .journey-steps {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-profile {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .scale-options {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .scale-option {
+                min-width: calc(20% - 5px);
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Mind Well</h1>
+            <h2>"Where Technology meets Compassion"</h2>
+            <p>Your personalized path to mental wellness and support</p>
+        </div>
+
+        <!-- User Profile -->
+        <div class="user-profile">
+            <div class="profile-avatar">JD</div>
+            <div class="profile-info">
+                <h3>Welcome back, John Doe</h3>
+                <p id="profile-status">Member since March 2024 • Last assessment: Not completed</p>
+            </div>
+            <div style="margin-left: auto;">
+                <button class="nav-tab" onclick="showAdminDashboard()">Admin Dashboard</button>
+            </div>
+        </div>
+
+        <!-- Journey Steps Overview -->
+        <div class="journey-steps">
+            <div class="step-card">
+                <div class="step-header">
+                    <div class="step-icon" style="background: linear-gradient(135deg, #74b9ff, #0984e3);">📝</div>
+                    <div class="step-title">Step 1: Assessment Quiz</div>
+                </div>
+                <div class="step-description">
+                    Complete a comprehensive 15-question mental health assessment to understand your current well-being.
+                </div>
+                <button class="step-btn" onclick="startAssessment()" id="quiz-btn">Take Assessment</button>
+            </div>
+
+            <div class="step-card">
+                <div class="step-header">
+                    <div class="step-icon" style="background: linear-gradient(135deg, #00b894, #00cec9);">🧘</div>
+                    <div class="step-title">Step 2: Mental Exercises</div>
+                </div>
+                <div class="step-description">
+                    Personalized mental wellness exercises and assignments based on your assessment results.
+                </div>
+                <button class="step-btn" onclick="showExercises()" id="exercises-btn" disabled>Start Exercises</button>
+            </div>
+
+            <div class="step-card">
+                <div class="step-header">
+                    <div class="step-icon" style="background: linear-gradient(135deg, #fdcb6e, #e17055);">🤖</div>
+                    <div class="step-title">Step 3: AI Support Chat</div>
+                </div>
+                <div class="step-description">
+                    Chat with our AI counselor for immediate support and guidance when you need someone to talk to.
+                </div>
+                <button class="step-btn" onclick="showChatbot()" id="chatbot-btn" disabled>Chat with AI</button>
+            </div>
+
+            <div class="step-card">
+                <div class="step-header">
+                    <div class="step-icon" style="background: linear-gradient(135deg, #fd79a8, #e84393);">👨‍⚕️</div>
+                    <div class="step-title">Step 4: Professional Help</div>
+                </div>
+                <div class="step-description">
+                    Connect with licensed counselors and mental health professionals for personalized treatment.
+                </div>
+                <button class="step-btn" onclick="showCounselor()" id="counselor-btn" disabled>Find Counselor</button>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="navigation-tabs">
+            <button class="nav-tab active" onclick="showSection('dashboard')">Dashboard</button>
+            <button class="nav-tab" onclick="showSection('peer-support')">Peer Support</button>
+            <button class="nav-tab" onclick="showSection('resources')">Resources</button>
+            <button class="nav-tab" onclick="showSection('progress')">My Progress</button>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Dashboard Overview -->
+            <div id="dashboard-section">
+                <h2>Your Mental Health Journey</h2>
+                <p>Welcome to your personalized mental health dashboard. Start by taking the assessment quiz to receive customized recommendations and support options.</p>
+                
+                <div style="margin-top: 30px;">
+                    <h3>Quick Stats</h3>
+                    <div class="analytics-grid">
+                        <div class="analytics-card">
+                            <h4 id="assessments-count">0</h4>
+                            <p>Assessments Completed</p>
+                        </div>
+                        <div class="analytics-card">
+                            <h4>0</h4>
+                            <p>Exercises Completed</p>
+                        </div>
+                        <div class="analytics-card">
+                            <h4>0</h4>
+                            <p>Chat Sessions</p>
+                        </div>
+                        <div class="analytics-card">
+                            <h4>0</h4>
+                            <p>Days Streak</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assessment Quiz Section -->
+            <div id="quiz-intro" class="quiz-container">
+                <div class="quiz-intro">
+                    <h2>Welcome to the Mental Health Assessment</h2>
+                    <p>This assessment consists of 15 questions designed to evaluate various aspects of your mental health and well-being. 
+                    For each question, please rate your response on a scale of 0 to 9, where 0 represents "not at all" and 9 represents "extremely" or "always".</p>
+                    <p>Please answer honestly based on how you've been feeling over the past two weeks. 
+                    This assessment is for informational purposes only and should not replace professional medical advice.</p>
+                    <button class="btn" onclick="startQuiz()">Start Assessment</button>
+                </div>
+            </div>
+
+            <div id="quiz" class="quiz-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div id="questionContainer"></div>
+                <div class="quiz-buttons">
+                    <button class="btn" id="prevBtn" onclick="previousQuestion()" disabled>Previous</button>
+                    <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>Next</button>
+                    <button class="btn" id="submitBtn" onclick="calculateResults()" style="display: none;">Get Results</button>
+                </div>
+            </div>
+
+            <div id="results" class="results-container">
+                <h2>Your Mental Health Assessment Results</h2>
+                <div class="score-display" id="scoreDisplay"></div>
+                <div class="report" id="reportContainer"></div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn" onclick="returnToDashboard()">Return to Dashboard</button>
+                    <button class="btn" onclick="restartQuiz()" style="background: #6c757d; margin-left: 10px;">Retake Assessment</button>
+                </div>
+            </div>
+
+            <!-- Mental Exercises Section -->
+            <div id="exercises-section" class="exercises-section">
+                <h2>Mental Wellness Exercises</h2>
+                <p>Based on your assessment, here are personalized exercises to improve your mental health:</p>
+                
+                <div class="exercise-grid">
+                    <div class="exercise-card">
+                        <h4>🧘 Mindfulness Meditation</h4>
+                        <p>Practice 10 minutes of daily mindfulness to reduce stress and anxiety.</p>
+                        <button class="step-btn" style="margin-top: 10px;">Start Exercise</button>
+                    </div>
+                    <div class="exercise-card">
+                        <h4>📝 Gratitude Journal</h4>
+                        <p>Write down 3 things you're grateful for each day to boost positivity.</p>
+                        <button class="step-btn" style="margin-top: 10px;">Start Exercise</button>
+                    </div>
+                    <div class="exercise-card">
+                        <h4>🚶 Daily Walk</h4>
+                        <p>Take a 20-minute walk in nature to improve mood and energy levels.</p>
+                        <button class="step-btn" style="margin-top: 10px;">Start Exercise</button>
+                    </div>
+                    <div class="exercise-card">
+                        <h4>😴 Sleep Hygiene</h4>
+                        <p>Establish a consistent bedtime routine for better sleep quality.</p>
+                        <button class="step-btn" style="margin-top: 10px;">Start Exercise</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Chatbot Section -->
+            <div id="chatbot-section" class="chatbot-section">
+                <h2>AI Mental Health Support</h2>
+                <p>Chat with our AI counselor for immediate support and guidance.</p>
+                
+                <div class="chat-container" id="chat-container">
+                    <div class="chat-message bot-message">
+                        <strong>AI Counselor:</strong> Hello! I'm here to provide support and guidance. How are you feeling today? What would you like to talk about?
+                    </div>
+                </div>
+                
+                <div class="chat-input-container">
+                    <input type="text" class="chat-input" id="chat-input" placeholder="Type your message here..." onkeypress="handleChatKeyPress(event)">
+                    <button class="chat-send" onclick="sendChatMessage()">Send</button>
+                </div>
+            </div>
+
+            <!-- Professional Counselor Section -->
+            <div id="counselor-section" class="counselor-section">
+                <h2>Professional Mental Health Support</h2>
+                <p>Connect with licensed mental health professionals for personalized care.</p>
+                
+                <div class="counselor-grid">
+                    <div class="counselor-card">
+                        <h4>🩺 Emergency Support</h4>
+                        <p><strong>Crisis Hotline:</strong> 988</p>
+                        <p><strong>Emergency:</strong> 911</p>
+                        <p><strong>Crisis Text:</strong> Text HOME to 741741</p>
+                        <button class="step-btn" style="margin-top: 10px; background: #dc3545;">Get Immediate Help</button>
+                    </div>
+                    <div class="counselor-card">
+                        <h4>👨‍⚕️ Licensed Therapists</h4>
+                        <p>Connect with board-certified mental health professionals.</p>
+                        <p>Available 24/7 • Insurance accepted</p>
+                        <button class="step-btn" style="margin-top: 10px;">Book Appointment</button>
+                    </div>
+                    <div class="counselor-card">
+                        <h4>💊 Psychiatric Care</h4>
+                        <p>Medication management and psychiatric evaluations.</p>
+                        <p>Specialized treatment plans</p>
+                        <button class="step-btn" style="margin-top: 10px;">Find Psychiatrist</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other sections -->
+            <div id="peer-support-section" class="hidden">
+                <h2>Peer Support Community</h2>
+                <p>Connect with others who understand your journey. All discussions are moderated by trained volunteers.</p>
+                
+                <div style="margin: 20px 0;">
+                    <button class="step-btn" style="width: auto; margin-right: 10px;">Join Discussion</button>
+                    <button class="step-btn" style="width: auto; background: #28a745;" onclick="openStorySharing()">Share Your Story</button>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #667eea;">
+                    <h4>💬 Anonymous User • 2 hours ago</h4>
+                    <p>"Starting therapy next week. Feeling nervous but hopeful. Anyone have tips for the first session?"</p>
+                    <small style="color: #666;">12 replies • Moderated by Sarah (Volunteer)</small>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #667eea;">
+                    <h4>💬 Community Member • 5 hours ago</h4>
+                    <p>"Celebrating 30 days of consistent meditation practice! Small steps really do make a difference."</p>
+                    <small style="color: #666;">8 replies • 15 likes</small>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #667eea;">
+                    <h4>💬 Support Seeker • 1 day ago</h4>
+                    <p>"Having a tough day. Could use some encouragement and positive thoughts."</p>
+                    <small style="color: #666;">24 replies • Moderated by Alex (Volunteer)</small>
+                </div>
+            </div>
+
+            <!-- Story Sharing Section (Feedback Form) -->
+            <div id="story-sharing-section" class="hidden">
+                <h2 style="text-align:center; margin-bottom:20px;">Share Your Story</h2>
+                <p style="text-align:center; margin-bottom:30px; color:#666;">Your experience might help others on their journey. All submissions are reviewed by moderators.</p>
+                
+                <!-- Name -->
+                <div class="question" style="margin-bottom: 30px; padding: 25px; background: #f8f9fa; border-radius: 10px; border-left: 4px solid #4CAF50;">
+                    <h3>Your Name (optional - you can remain anonymous)</h3>
+                    <input type="text" id="storyName" placeholder="Enter your name or leave blank for anonymous"
+                        style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;">
+                </div>
+
+                <!-- Story Category -->
+                <div class="question" style="margin-bottom: 30px; padding: 25px; background: #f8f9fa; border-radius: 10px; border-left: 4px solid #4CAF50;">
+                    <h3>Story Category</h3>
+                    <select id="storyCategory" 
+                        style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;">
+                        <option value="recovery">Recovery Journey</option>
+                        <option value="support">Finding Support</option>
+                        <option value="challenge">Overcoming Challenges</option>
+                        <option value="advice">Advice & Tips</option>
+                        <option value="hope">Message of Hope</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <!-- Rating Experience -->
+                <div class="question" style="margin-bottom: 30px; padding: 25px; background: #f8f9fa; border-radius: 10px; border-left: 4px solid #4CAF50;">
+                    <h3>How would you rate your overall mental health journey progress?</h3>
+                    <div id="storyRating">
+                        <span data-value="1" style="font-size: 2rem; cursor: pointer;">☆</span>
+                        <span data-value="2" style="font-size: 2rem; cursor: pointer;">☆</span>
+                        <span data-value="3" style="font-size: 2rem; cursor: pointer;">☆</span>
+                        <span data-value="4" style="font-size: 2rem; cursor: pointer;">☆</span>
+                        <span data-value="5" style="font-size: 2rem; cursor: pointer;">☆</span>
+                    </div>
+                    <small style="color: #666;">1 = Very difficult • 5 = Going well</small>
+                </div>
+
+                <!-- Story Content -->
+                <div class="question" style="margin-bottom: 30px; padding: 25px; background: #f8f9fa; border-radius: 10px; border-left: 4px solid #4CAF50;">
+                    <h3>Your Story</h3>
+                    <textarea id="storyMessage" rows="8" maxlength="1000" placeholder="Share your experience, what you've learned, or advice for others..."
+                        style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem;"
+                        oninput="updateStoryCharCount()"></textarea>
+                    <div id="storyCharCount" style="font-size: 0.9rem; color: #666; text-align: right; margin-top: 5px;">0/1000</div>
+                </div>
+
+                <!-- Upload Photos -->
+                <div class="question" style="margin-bottom: 30px; padding: 25px; background: #f8f9fa; border-radius: 10px; border-left: 4px solid #4CAF50;">
+                    <h3>Add Photos (optional)</h3>
+                    <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">Share images that represent your journey (no personal identifying information)</p>
+                    <input type="file" id="storyPhotos" accept="image/*" multiple onchange="previewStoryFiles(event, 'storyPhotoPreview')">
+                    <div id="storyPhotoPreview" style="margin-top:10px; display:flex; flex-wrap:wrap;"></div>
+                </div>
+
+                <!-- Upload Video -->
+                <div class="question" style="margin-bottom: 30px; padding: 25px; background: #f8f9fa; border-radius: 10px; border-left: 4px solid #4CAF50;">
+                    <h3>Add Video Message (optional)</h3>
+                    <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">Record a short video message for the community</p>
+                    <input type="file" id="storyVideo" accept="video/*" onchange="previewStoryFiles(event, 'storyVideoPreview')">
+                    <div id="storyVideoPreview" style="margin-top:10px;"></div>
+                </div>
+
+                <!-- Privacy Notice -->
+                <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; border-left: 4px solid #2196F3; margin-bottom: 30px;">
+                    <h4 style="color: #1976D2; margin-bottom: 10px;">Privacy & Safety Notice</h4>
+                    <ul style="color: #555; padding-left: 20px;">
+                        <li>All stories are reviewed by trained moderators before publication</li>
+                        <li>Personal identifying information will be removed</li>
+                        <li>You can remain completely anonymous if you choose</li>
+                        <li>Stories that may be harmful will not be published</li>
+                        <li>Contact information for support resources will be added to all posts</li>
+                    </ul>
+                </div>
+
+                <!-- Buttons -->
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn" onclick="submitStory()" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 15px 30px; font-size: 1.1rem; border-radius: 8px; cursor: pointer; margin: 0 10px;">Share Story</button>
+                    <button class="btn" onclick="backToPeerSupport()" style="background: #6c757d; color: white; border: none; padding: 15px 30px; font-size: 1.1rem; border-radius: 8px; cursor: pointer; margin: 0 10px;">Back to Community</button>
+                </div>
+            </div>
+
+            <div id="resources-section" class="hidden">
+                <h2>Mental Health Resources</h2>
+                <p>Educational materials, self-help tools, and additional support resources.</p>
+                
+                <div class="exercise-grid">
+                    <div class="exercise-card">
+                        <h4>📚 Learning Center</h4>
+                        <p>Articles and guides about mental health topics, coping strategies, and wellness tips.</p>
+                        <button class="step-btn" style="margin-top: 10px;" onclick="showArticles()">Explore Articles</button>
+                    </div>
+                    <div class="exercise-card">
+                        <h4>🎧 Guided Meditations</h4>
+                        <p>Audio sessions for relaxation, stress relief, and mindfulness practice.</p>
+                        <button class="step-btn" style="margin-top: 10px;">Listen Now</button>
+                    </div>
+                    <div class="exercise-card">
+                        <h4>📱 Mobile Apps</h4>
+                        <p>Recommended mental health apps for daily support and tracking.</p>
+                        <button class="step-btn" style="margin-top: 10px;">View Apps</button>
+                    </div>
+                    <div class="exercise-card">
+                        <h4>🏥 Local Services</h4>
+                        <p>Find mental health services and support groups in your area.</p>
+                        <button class="step-btn" style="margin-top: 10px;">Find Services</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Articles Section -->
+            <div id="articles-section" class="hidden">
+                <div style="display: flex; align-items: center; margin-bottom: 30px;">
+                    <button class="btn" onclick="backToResources()" style="background: #6c757d; margin-right: 15px;">← Back to Resources</button>
+                    <h2>Mental Health Articles</h2>
+                </div>
+                
+                <div class="exercise-grid">
+                    <!-- Anxiety Articles -->
+                    <div class="exercise-card">
+                        <h4>🧠 Understanding Anxiety</h4>
+                        <p>Learn about different types of anxiety disorders and their symptoms.</p>
+                        <div style="margin-top: 15px;">
+                            <a href="https://www.nimh.nih.gov/health/topics/anxiety-disorders" target="_blank" class="article-link">NIMH: Anxiety Disorders</a><br>
+                            <a href="https://adaa.org/understanding-anxiety" target="_blank" class="article-link">ADAA: Understanding Anxiety</a><br>
+                            <a href="https://www.mayoclinic.org/diseases-conditions/anxiety/symptoms-causes/syc-20350961" target="_blank" class="article-link">Mayo Clinic: Anxiety Overview</a>
+                        </div>
+                    </div>
+
+                    <!-- Depression Articles -->
+                    <div class="exercise-card">
+                        <h4>💙 Understanding Depression</h4>
+                        <p>Comprehensive information about depression, its causes, and treatment options.</p>
+                        <div style="margin-top: 15px;">
+                            <a href="https://www.nimh.nih.gov/health/topics/depression" target="_blank" class="article-link">NIMH: Depression</a><br>
+                            <a href="https://www.who.int/news-room/fact-sheets/detail/depression" target="_blank" class="article-link">WHO: Depression Fact Sheet</a><br>
+                            <a href="https://www.mayoclinic.org/diseases-conditions/depression/symptoms-causes/syc-20356007" target="_blank" class="article-link">Mayo Clinic: Depression</a>
+                        </div>
+                    </div>
+
+                    <!-- Stress Management -->
+                    <div class="exercise-card">
+                        <h4>😌 Stress Management</h4>
+                        <p>Practical strategies for managing stress and building resilience.</p>
+                        <div style="margin-top: 15px;">
+                            <a href="https://www.apa.org/topics/stress/manage" target="_blank" class="article-link">APA: Managing Stress</a><br>
+                            <a href="https://www.helpguide.org/articles/stress/stress-management.htm" target="_blank" class="article-link">HelpGuide: Stress Management</a><br>
+                            <a href="https://www.mayoclinic.org/healthy-lifestyle/stress-management/basics/stress-basics/hlv-20049495" target="_blank" class="article-link">Mayo Clinic: Stress Management</a>
+                        </div>
+                    </div>
+
+                    <!-- Sleep and Mental Health -->
+                    <div class="exercise-card">
+                        <h4>😴 Sleep & Mental Health</h4>
+                        <p>The connection between sleep quality and mental well-being.</p>
+                        <div style="margin-top: 15px;">
+                            <a href="https://www.sleepfoundation.org/mental-health" target="_blank" class="article-link">Sleep Foundation: Mental Health</a><br>
+                            <a href="https://www.nimh.nih.gov/health/publications/depression-and-sleep" target="_blank" class="article-link">NIMH: Depression and Sleep</a><br>
+                            <a href="https://www.cdc.gov/sleep/about_sleep/mental_health.html" target="_blank" class="article-link">CDC: Sleep and Mental Health</a>
+                        </div>
+                    </div>
+
+                    <!-- Mindfulness and Meditation -->
+                    <div class="exercise-card">
+                        <h4>🧘 Mindfulness & Meditation</h4>
+                        <p>Evidence-based mindfulness practices for mental health.</p>
+                        <div style="margin-top: 15px;">
+                            <a href="https://www.mindful.org/what-is-mindfulness/" target="_blank" class="article-link">Mindful.org: What is Mindfulness</a><br>
+                            <a href="https://www.nccih.nih.gov/health/meditation-in-depth" target="_blank" class="article-link">NCCIH: Meditation Overview</a><br>
+                            <a href="https://www.apa.org/topics/mindfulness/meditation" target="_blank" class="article-link">APA: Meditation Benefits</a>
+                        </div>
+                    </div>
+
+                    <!-- Crisis Resources -->
+                    <div class="exercise-card" style="border-left: 4px solid #dc3545;">
+                        <h4>🆘 Crisis Resources</h4>
+                        <p>Immediate help and support for mental health emergencies.</p>
+                        <div style="margin-top: 15px;">
+                            <a href="https://suicidepreventionlifeline.org/" target="_blank" class="article-link">988 Suicide & Crisis Lifeline</a><br>
+                            <a href="https://www.crisistextline.org/" target="_blank" class="article-link">Crisis Text Line</a><br>
+                            <a href="https://www.samhsa.gov/find-help/national-helpline" target="_blank" class="article-link">SAMHSA National Helpline</a>
+                        </div>
+                    </div>
+
+                    <!-- Therapy and Treatment -->
+                    <div class="exercise-card">
+                        <h4>🏥 Therapy & Treatment</h4>
+                        <p>Information about different types of therapy and treatment options.</p>
+                        <div style="margin-top: 15px;">
+                            <a href="https://www.apa.org/topics/therapy" target="_blank" class="article-link">APA: Understanding Therapy</a><br>
+                            <a href="https://www.nimh.nih.gov/health/topics/psychotherapies" target="_blank" class="article-link">NIMH: Psychotherapies</a><br>
+                            <a href="https://www.psychologytoday.com/us/basics/therapy" target="_blank" class="article-link">Psychology Today: Therapy Basics</a>
+                        </div>
+                    </div>
+
+                    <!-- Self-Care -->
+                    <div class="exercise-card">
+                        <h4>💚 Self-Care Strategies</h4>
+                        <p>Practical self-care tips for maintaining mental wellness.</p>
+                        <div style="margin-top: 15px;">
+                            <a href="https://www.mentalhealth.gov/basics/what-is-mental-health" target="_blank" class="article-link">MentalHealth.gov: Basics</a><br>
+                            <a href="https://www.nami.org/Your-Journey/Individuals-with-Mental-Illness/Taking-Care-of-Yourself" target="_blank" class="article-link">NAMI: Taking Care of Yourself</a><br>
+                            <a href="https://www.helpguide.org/articles/mental-health/building-better-mental-health.htm" target="_blank" class="article-link">HelpGuide: Building Mental Health</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="progress-section" class="hidden">
+                <h2>Your Progress</h2>
+                <p>Track your mental health journey and see your improvements over time.</p>
+                
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h4>Mood Trends</h4>
+                        <p>Visual chart of your mood patterns</p>
+                        <div style="background: #e9ecef; height: 100px; border-radius: 10px; margin-top: 10px; display: flex; align-items: center; justify-content: center;">
+                            Chart Placeholder
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h4>Goals Achieved</h4>
+                        <p id="goals-achieved">0 of 0 goals completed</p>
+                        <div style="margin-top: 10px;">
+                            <button class="step-btn" onclick="openGoalSetting()">Set New Goals</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Goal Setting Section -->
+            <div id="goal-setting-section" class="hidden">
+                <div style="display: flex; align-items: center; margin-bottom: 30px;">
+                    <button class="btn" onclick="backToProgress()" style="background: #6c757d; margin-right: 15px;">← Back to Progress</button>
+                    <h2>Set Your Wellness Goals</h2>
+                </div>
+                
+                <!-- Step 1: Select Hobbies/Interests -->
+                <div id="hobby-selection" style="margin-bottom: 30px;">
+                    <h3 style="margin-bottom: 20px;">What are your interests and hobbies?</h3>
+                    <p style="color: #666; margin-bottom: 20px;">Select activities you enjoy or would like to explore. We'll create personalized wellness challenges for you.</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                        <label class="hobby-option">
+                            <input type="checkbox" value="reading"> Reading & Literature
+                        </label>
+                        <label class="hobby-option">
+                            <input type="checkbox" value="exercise"> Physical Exercise
+                        </label>
+                        <label class="hobby-option">
+                            <input type="checkbox" value="cooking"> Cooking & Nutrition
+                        </label>
+                        <label class="hobby-option">
+                            <input type="checkbox" value="art"> Art & Creativity
+                        </label>
+                        <label class="hobby-option">
+                            <input type="checkbox" value="music"> Music & Audio
+                        </label>
+                        <label class="hobby-option">
+                            <input type="checkbox" value="gardening"> Gardening & Nature
+                        </label>
+                        <label class="hobby-option">
+                            <input type="checkbox" value="technology"> Technology & Learning
+                        </label>
+                        <label class="hobby-option">
+                            <input type="checkbox" value="social"> Social Activities
+                        </label>
+                        <label class="hobby-option">
+                            <input type="checkbox" value="writing"> Writing & Journaling
+                        </label>
+                        <label class="hobby-option">
+                            <input type="checkbox" value="meditation"> Mindfulness & Meditation
+                        </label>
+                        <label class="hobby-option">
+                            <input type="checkbox" value="games"> Games & Puzzles
+                        </label>
+                        <label class="hobby-option">
+                            <input type="checkbox" value="volunteering"> Volunteering & Helping
+                        </label>
+                    </div>
+                    
+                    <button class="btn" onclick="generateChallenges()" id="generate-btn" disabled>Generate My Challenges</button>
+                </div>
+
+                <!-- Step 2: Generated Challenges -->
+                <div id="generated-challenges" class="hidden">
+                    <h3 style="margin-bottom: 20px;">Your Personalized Wellness Challenges</h3>
+                    <div id="challenges-container"></div>
+                    
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button class="btn" onclick="saveGoals()">Save Selected Goals</button>
+                        <button class="btn" onclick="regenerateChallenges()" style="background: #6c757d; margin-left: 10px;">Generate Different Challenges</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div id="admin-dashboard" class="admin-dashboard">
+            <h2>📊 Admin Dashboard - Mental Health Analytics</h2>
+            <p>Anonymous aggregated data to help authorities understand trends and plan interventions.</p>
+            
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <h3>1,247</h3>
+                    <p>Total Assessments</p>
+                    <small style="color: #28a745;">↑ 12% this month</small>
+                </div>
+                <div class="analytics-card">
+                    <h3>23%</h3>
+                    <p>High-Risk Cases</p>
+                    <small style="color: #dc3545;">↑ 5% this month</small>
+                </div>
+                <div class="analytics-card">
+                    <h3>67%</h3>
+                    <p>Seeking Help</p>
+                    <small style="color: #28a745;">↑ 18% this month</small>
+                </div>
+                <div class="analytics-card">
+                    <h3>892</h3>
+                    <p>Active Users</p>
+                    <small style="color: #28a745;">↑ 8% this month</small>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 15px;">
+                    <h4>🚨 Crisis Interventions</h4>
+                    <p>Emergency responses this month: <strong>34</strong></p>
+                    <p>Average response time: <strong>2.3 minutes</strong></p>
+                </div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 15px;">
+                    <h4>🎯 Intervention Success</h4>
+                    <p>Users showing improvement: <strong>78%</strong></p>
+                    <p>Completion rate: <strong>64%</strong></p>
+                </div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 15px;">
+                    <h4>👥 Peer Support Activity</h4>
+                    <p>Active discussions: <strong>156</strong></p>
+                    <p>Volunteer moderators: <strong>24</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            "How often do you feel sad or depressed?",
+            "How much do you worry about things in your daily life?",
+            "How often do you feel overwhelmed by your responsibilities?",
+            "How difficult is it for you to fall asleep or stay asleep?",
+            "How often do you feel tired or have little energy?",
+            "How much do you enjoy activities you used to find pleasurable?",
+            "How often do you feel hopeless about the future?",
+            "How much do you criticize yourself or feel guilty?",
+            "How difficult is it for you to concentrate on tasks?",
+            "How often do you feel anxious or nervous?",
+            "How much do social situations make you feel uncomfortable?",
+            "How often do you have thoughts of hurting yourself?",
+            "How much has your appetite changed recently?",
+            "How often do you feel isolated or lonely?",
+            "How much do you feel in control of your life?"
+        ];
+
+        let currentQuestion = 0;
+        let answers = new Array(questions.length).fill(null);
+        let assessmentCompleted = false;
+
+        // Dashboard navigation functions
+        function showSection(sectionName) {
+            // Hide all sections
+            const sections = ['dashboard', 'peer-support', 'resources', 'progress'];
+            sections.forEach(section => {
+                const element = document.getElementById(section + '-section');
+                if (element) element.classList.add('hidden');
+            });
+            
+            // Show selected section
+            const targetSection = document.getElementById(sectionName + '-section');
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+            } else if (sectionName === 'dashboard') {
+                document.getElementById('dashboard-section').style.display = 'block';
+            }
+            
+            // Update active tab
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function startAssessment() {
+            hideAllSections();
+            document.getElementById('quiz-intro').classList.add('active');
+        }
+
+        function startQuiz() {
+            document.getElementById('quiz-intro').classList.remove('active');
+            document.getElementById('quiz').classList.add('active');
+            showQuestion(0);
+        }
+
+        function showQuestion(index) {
+            const container = document.getElementById('questionContainer');
+            const question = questions[index];
+            
+            container.innerHTML = `
+                <div class="question">
+                    <h3>Question ${index + 1} of ${questions.length}</h3>
+                    <p>${question}</p>
+                    <div class="scale-container">
+                        <div class="scale-labels">
+                            <span>Not at all (0)</span>
+                            <span>Extremely (9)</span>
+                        </div>
+                        <div class="scale-options">
+                            ${Array.from({length: 10}, (_, i) => `
+                                <div class="scale-option">
+                                    <input type="radio" id="q${index}_${i}" name="question${index}" value="${i}" 
+                                           ${answers[index] === i ? 'checked' : ''} onchange="selectAnswer(${index}, ${i})">
+                                    <label for="q${index}_${i}">${i}</label>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            updateProgress();
+            updateButtons();
+        }
+
+        function selectAnswer(questionIndex, value) {
+            answers[questionIndex] = value;
+            updateButtons();
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function updateButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
+
+            prevBtn.disabled = currentQuestion === 0;
+            
+            if (currentQuestion === questions.length - 1) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'inline-block';
+                submitBtn.disabled = answers[currentQuestion] === null;
+            } else {
+                nextBtn.style.display = 'inline-block';
+                submitBtn.style.display = 'none';
+                nextBtn.disabled = answers[currentQuestion] === null;
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion(currentQuestion);
+            }
+        }
+
+        function calculateResults() {
+            if (answers.includes(null)) {
+                alert('Please answer all questions before submitting.');
+                return;
+            }
+
+            const totalScore = answers.reduce((sum, answer) => sum + answer, 0);
+            const maxScore = questions.length * 9;
+            const percentage = (totalScore / maxScore) * 100;
+
+            let status, statusClass, report, recommendations;
+
+            if (percentage <= 25) {
+                status = "Good";
+                statusClass = "status-good";
+                report = {
+                    title: "Excellent Mental Health",
+                    description: "Your responses indicate that you're experiencing good mental health with minimal symptoms of distress. You appear to be coping well with daily challenges and maintaining a positive outlook.",
+                    details: "Your low score suggests that you have effective coping mechanisms, good emotional regulation, and a healthy perspective on life. Continue with your current self-care practices."
+                };
+                recommendations = [
+                    "Maintain your current healthy lifestyle habits",
+                    "Continue engaging in activities you enjoy",
+                    "Keep building and maintaining social connections",
+                    "Practice regular self-care and stress management",
+                    "Consider sharing your positive coping strategies with others"
+                ];
+            } else if (percentage <= 50) {
+                status = "Not Bad";
+                statusClass = "status-not-bad";
+                report = {
+                    title: "Fair Mental Health",
+                    description: "Your responses suggest that you're experiencing some mild to moderate symptoms that may be affecting your daily life. While not severe, these symptoms are worth addressing.",
+                    details: "You may be dealing with some stress, mild anxiety, or occasional low mood. These are common experiences, but with some attention and care, you can improve your mental well-being."
+                };
+                recommendations = [
+                    "Focus on stress reduction techniques like meditation or deep breathing",
+                    "Establish a regular sleep schedule and exercise routine",
+                    "Connect with supportive friends and family members",
+                    "Consider talking to a counselor or therapist for additional support",
+                    "Practice mindfulness and self-compassion",
+                    "Limit alcohol and caffeine intake"
+                ];
+            } else if (percentage <= 75) {
+                status = "Risky";
+                statusClass = "status-risky";
+                report = {
+                    title: "Concerning Mental Health",
+                    description: "Your responses indicate that you're experiencing significant symptoms that are likely impacting your daily functioning and quality of life. Professional support would be beneficial.",
+                    details: "The symptoms you're experiencing may include moderate to severe anxiety, depression, or other mental health challenges. These symptoms are interfering with your ability to enjoy life and function effectively."
+                };
+                recommendations = [
+                    "Reach out to a mental health professional as soon as possible",
+                    "Contact your primary care doctor to discuss your symptoms",
+                    "Build a support network of trusted friends and family",
+                    "Avoid making major life decisions while experiencing these symptoms",
+                    "Practice self-care and stress reduction techniques",
+                    "Consider joining a support group"
+                ];
+            } else {
+                status = "Extremely Bad";
+                statusClass = "status-extremely-bad";
+                report = {
+                    title: "Severe Mental Health Concerns",
+                    description: "Your responses indicate that you're experiencing severe symptoms that are significantly impacting your life. Immediate professional help is strongly recommended.",
+                    details: "The high level of symptoms you're experiencing suggests you may be dealing with severe depression, anxiety, or other serious mental health conditions. These symptoms require professional attention and support."
+                };
+                recommendations = [
+                    "Seek immediate professional help from a mental health provider",
+                    "Contact a crisis hotline if you're having thoughts of self-harm",
+                    "Reach out to trusted friends, family, or support persons",
+                    "Consider contacting your doctor or going to an emergency room if needed",
+                    "Avoid isolation and stay connected with supportive people",
+                    "Follow up with professional treatment recommendations"
+                ];
+            }
+
+            displayResults(totalScore, maxScore, status, statusClass, report, recommendations);
+        }
+
+        function displayResults(score, maxScore, status, statusClass, report, recommendations) {
+            document.getElementById('quiz').classList.remove('active');
+            document.getElementById('results').classList.add('active');
+
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            scoreDisplay.className = `score-display ${statusClass}`;
+            scoreDisplay.innerHTML = `
+                <div>${score}/${maxScore}</div>
+                <div style="font-size: 1.5rem; margin-top: 10px;">${status}</div>
+            `;
+
+            const reportContainer = document.getElementById('reportContainer');
+            reportContainer.innerHTML = `
+                <h3>${report.title}</h3>
+                <p><strong>Overall Assessment:</strong> ${report.description}</p>
+                <p>${report.details}</p>
+                
+                <div class="recommendations">
+                    <h4>Recommendations:</h4>
+                    <ul>
+                        ${recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                    </ul>
+                </div>
+
+                ${status === "Risky" || status === "Extremely Bad" ? `
+                    <div class="warning">
+                        <h4>Important Notice:</h4>
+                        <p>This assessment indicates that you may benefit from professional mental health support. If you're experiencing thoughts of self-harm, please contact a crisis helpline or emergency services immediately.</p>
+                        <p><strong>Crisis Resources:</strong></p>
+                        <ul style="list-style-type: disc; margin-left: 20px;">
+                            <li>National Suicide Prevention Lifeline: 988</li>
+                            <li>Crisis Text Line: Text HOME to 741741</li>
+                            <li>Emergency Services: 911</li>
+                        </ul>
+                    </div>
+                ` : ''}
+            `;
+
+            assessmentCompleted = true;
+            unlockNextSteps();
+            updateDashboardStats();
+        }
+
+        function unlockNextSteps() {
+            document.getElementById('exercises-btn').disabled = false;
+            document.getElementById('chatbot-btn').disabled = false;
+            document.getElementById('counselor-btn').disabled = false;
+            
+            document.getElementById('quiz-btn').textContent = 'View Last Results';
+            
+            const now = new Date();
+            const dateStr = now.toLocaleDateString();
+            document.getElementById('profile-status').textContent = `Member since March 2024 • Last assessment: ${dateStr}`;
+        }
+
+        function updateDashboardStats() {
+            document.getElementById('assessments-count').textContent = '1';
+        }
+
+        function returnToDashboard() {
+            hideAllSections();
+            document.getElementById('dashboard-section').style.display = 'block';
+            
+            document.getElementById('results').classList.remove('active');
+            document.getElementById('quiz-intro').classList.remove('active');
+            document.getElementById('quiz').classList.remove('active');
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            answers = new Array(questions.length).fill(null);
+            document.getElementById('results').classList.remove('active');
+            document.getElementById('quiz-intro').classList.add('active');
+        }
+
+        function showExercises() {
+            hideAllSections();
+            document.getElementById('exercises-section').style.display = 'block';
+        }
+
+        function showChatbot() {
+            hideAllSections();
+            document.getElementById('chatbot-section').style.display = 'block';
+        }
+
+        function showCounselor() {
+            hideAllSections();
+            document.getElementById('counselor-section').style.display = 'block';
+        }
+
+        function showAdminDashboard() {
+            hideAllSections();
+            document.getElementById('admin-dashboard').style.display = 'block';
+        }
+
+        let selectedStoryRating = 0;
+
+        // Initialize story rating functionality
+        function initializeStoryRating() {
+            const storyStars = document.querySelectorAll("#storyRating span");
+            storyStars.forEach(star => {
+                star.addEventListener("click", () => {
+                    selectedStoryRating = parseInt(star.getAttribute("data-value"));
+                    storyStars.forEach((s, i) => {
+                        s.textContent = (i < selectedStoryRating) ? "★" : "☆";
+                        s.style.color = (i < selectedStoryRating) ? "gold" : "#ddd";
+                    });
+                });
+            });
+        }
+
+        // Preview uploaded files for story sharing
+        function previewStoryFiles(event, previewId) {
+            const preview = document.getElementById(previewId);
+            preview.innerHTML = "";
+            Array.from(event.target.files).forEach(file => {
+                if (file.type.startsWith("image/")) {
+                    const img = document.createElement("img");
+                    img.src = URL.createObjectURL(file);
+                    img.style.width = "80px";
+                    img.style.height = "80px";
+                    img.style.objectFit = "cover";
+                    img.style.borderRadius = "8px";
+                    img.style.marginRight = "10px";
+                    img.style.marginBottom = "10px";
+                    preview.appendChild(img);
+                } else if (file.type.startsWith("video/")) {
+                    const video = document.createElement("video");
+                    video.src = URL.createObjectURL(file);
+                    video.controls = true;
+                    video.style.width = "200px";
+                    video.style.borderRadius = "8px";
+                    preview.appendChild(video);
+                }
+            });
+        }
+
+        // Character counter for story
+        function updateStoryCharCount() {
+            const textarea = document.getElementById("storyMessage");
+            const counter = document.getElementById("storyCharCount");
+            counter.textContent = textarea.value.length + "/1000";
+        }
+
+        // Open story sharing section
+        function openStorySharing() {
+            hideAllSections();
+            document.getElementById('story-sharing-section').classList.remove('hidden');
+            // Initialize rating stars when section opens
+            setTimeout(initializeStoryRating, 100);
+        }
+
+        // Submit story
+        function submitStory() {
+            const name = document.getElementById("storyName").value.trim();
+            const category = document.getElementById("storyCategory").value;
+            const message = document.getElementById("storyMessage").value.trim();
+
+            if (!message) {
+                alert("Please share your story before submitting.");
+                return;
+            }
+
+            if (message.length < 50) {
+                alert("Please write at least 50 characters to share a meaningful story.");
+                return;
+            }
+
+            const displayName = name || "Anonymous";
+            
+            // Show success message
+            alert(`✅ Thank you ${displayName}! Your ${category} story has been submitted for review. Our moderators will review it within 24 hours before it appears in the community.`);
+
+            // Reset form
+            resetStoryForm();
+
+            // Go back to peer support
+            backToPeerSupport();
+        }
+
+        // Reset story form
+        function resetStoryForm() {
+            selectedStoryRating = 0;
+            document.querySelectorAll("#storyRating span").forEach(s => {
+                s.textContent = "☆";
+                s.style.color = "#ddd";
+            });
+            document.getElementById("storyName").value = "";
+            document.getElementById("storyCategory").value = "recovery";
+            document.getElementById("storyMessage").value = "";
+            document.getElementById("storyPhotos").value = "";
+            document.getElementById("storyVideo").value = "";
+            document.getElementById("storyPhotoPreview").innerHTML = "";
+            document.getElementById("storyVideoPreview").innerHTML = "";
+            updateStoryCharCount();
+        }
+
+        // Back to peer support
+        function backToPeerSupport() {
+            hideAllSections();
+            document.getElementById('peer-support-section').classList.remove('hidden');
+        }
+
+        // Show articles section
+        function showArticles() {
+            hideAllSections();
+            document.getElementById('articles-section').classList.remove('hidden');
+        }
+
+        // Back to resources
+        function backToResources() {
+            hideAllSections();
+            document.getElementById('resources-section').classList.remove('hidden');
+        }
+
+        let userGoals = [];
+        let selectedHobbies = [];
+
+        // Challenge database organized by hobby
+        const challengeDatabase = {
+            reading: [
+                { title: "Daily Reading Habit", description: "Read for 15 minutes each morning to start your day mindfully", duration: "7 days", difficulty: "easy", icon: "📚" },
+                { title: "Mindful Book Club", description: "Join or create a book discussion group to connect with others", duration: "30 days", difficulty: "medium", icon: "👥" },
+                { title: "Gratitude Reading", description: "Read one inspiring quote or poem daily and reflect on it", duration: "14 days", difficulty: "easy", icon: "✨" }
+            ],
+            exercise: [
+                { title: "Morning Energy Boost", description: "10-minute morning walk or stretching routine daily", duration: "14 days", difficulty: "easy", icon: "🚶" },
+                { title: "Active Stress Relief", description: "Use exercise as a stress management tool when feeling overwhelmed", duration: "21 days", difficulty: "medium", icon: "💪" },
+                { title: "Nature Fitness", description: "Exercise outdoors 3x per week to combine movement with nature therapy", duration: "30 days", difficulty: "medium", icon: "🌲" }
+            ],
+            cooking: [
+                { title: "Mindful Meal Prep", description: "Prepare one healthy, colorful meal mindfully each day", duration: "10 days", difficulty: "easy", icon: "🥗" },
+                { title: "Comfort Food Makeover", description: "Transform comfort foods into healthier mood-boosting versions", duration: "21 days", difficulty: "medium", icon: "🍲" },
+                { title: "Social Cooking", description: "Cook and share meals with friends or family twice weekly", duration: "30 days", difficulty: "medium", icon: "👨‍👩‍👧" }
+            ],
+            art: [
+                { title: "Daily Creative Expression", description: "Spend 10 minutes daily on any creative activity (draw, paint, craft)", duration: "14 days", difficulty: "easy", icon: "🎨" },
+                { title: "Emotion Through Art", description: "Use art to express and process your feelings weekly", duration: "28 days", difficulty: "medium", icon: "🖼️" },
+                { title: "Art Therapy Journal", description: "Combine visual art with written reflection 3x per week", duration: "21 days", difficulty: "hard", icon: "📖" }
+            ],
+            music: [
+                { title: "Mood Music Therapy", description: "Create playlists for different emotions and use them mindfully", duration: "14 days", difficulty: "easy", icon: "🎵" },
+                { title: "Active Listening Practice", description: "Spend 20 minutes daily in focused music listening meditation", duration: "21 days", difficulty: "medium", icon: "🎧" },
+                { title: "Musical Expression", description: "Learn a new song or instrument technique to boost confidence", duration: "30 days", difficulty: "hard", icon: "🎸" }
+            ],
+            gardening: [
+                { title: "Green Therapy", description: "Spend 15 minutes daily caring for plants or gardening", duration: "21 days", difficulty: "easy", icon: "🌱" },
+                { title: "Grow Your Mood", description: "Start an herb garden and use fresh herbs in cooking", duration: "60 days", difficulty: "medium", icon: "🌿" },
+                { title: "Community Garden Connection", description: "Join a community garden to combine nature therapy with social connection", duration: "90 days", difficulty: "hard", icon: "👥" }
+            ],
+            technology: [
+                { title: "Digital Mindfulness", description: "Use meditation or mental health apps for 10 minutes daily", duration: "14 days", difficulty: "easy", icon: "📱" },
+                { title: "Learning for Growth", description: "Take an online course in something that interests you", duration: "30 days", difficulty: "medium", icon: "💻" },
+                { title: "Tech-Life Balance", description: "Implement healthy technology boundaries and digital detox periods", duration: "21 days", difficulty: "medium", icon: "⚖️" }
+            ],
+            social: [
+                { title: "Connection Challenge", description: "Reach out to one friend or family member daily", duration: "7 days", difficulty: "easy", icon: "📞" },
+                { title: "Community Involvement", description: "Attend one social or community event weekly", duration: "28 days", difficulty: "medium", icon: "👥" },
+                { title: "Support Network Building", description: "Identify and strengthen your support system through regular contact", duration: "30 days", difficulty: "hard", icon: "🤝" }
+            ],
+            writing: [
+                { title: "Daily Gratitude Journal", description: "Write 3 things you're grateful for each evening", duration: "21 days", difficulty: "easy", icon: "📝" },
+                { title: "Emotional Processing", description: "Use journaling to work through difficult emotions weekly", duration: "28 days", difficulty: "medium", icon: "💭" },
+                { title: "Story of Strength", description: "Write about times you've overcome challenges to build resilience", duration: "14 days", difficulty: "medium", icon: "💪" }
+            ],
+            meditation: [
+                { title: "Beginner Mindfulness", description: "5 minutes of daily mindfulness or breathing exercises", duration: "10 days", difficulty: "easy", icon: "🧘" },
+                { title: "Stress Response Practice", description: "Use mindfulness techniques when feeling anxious or stressed", duration: "21 days", difficulty: "medium", icon: "😌" },
+                { title: "Advanced Awareness", description: "Explore different meditation styles (body scan, loving-kindness, etc.)", duration: "30 days", difficulty: "hard", icon: "🎯" }
+            ],
+            games: [
+                { title: "Brain Training Fun", description: "Play puzzle games or brain teasers for 15 minutes daily", duration: "14 days", difficulty: "easy", icon: "🧩" },
+                { title: "Social Gaming", description: "Use games to connect with friends or family members", duration: "21 days", difficulty: "medium", icon: "🎮" },
+                { title: "Mindful Gaming", description: "Practice using games as intentional stress relief (not escape)", duration: "30 days", difficulty: "hard", icon: "🎯" }
+            ],
+            volunteering: [
+                { title: "Acts of Kindness", description: "Perform one small act of kindness or service daily", duration: "14 days", difficulty: "easy", icon: "❤️" },
+                { title: "Regular Service", description: "Commit to volunteering 2-3 hours weekly for a cause you care about", duration: "60 days", difficulty: "medium", icon: "🤝" },
+                { title: "Leadership in Service", description: "Take on a leadership role in a volunteer organization", duration: "90 days", difficulty: "hard", icon: "👑" }
+            ]
+        };
+
+        // Open goal setting section
+        function openGoalSetting() {
+            hideAllSections();
+            document.getElementById('goal-setting-section').classList.remove('hidden');
+            setupHobbySelection();
+        }
+
+        // Setup hobby selection with change listeners
+        function setupHobbySelection() {
+            const checkboxes = document.querySelectorAll('.hobby-option input[type="checkbox"]');
+            const generateBtn = document.getElementById('generate-btn');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const label = this.parentElement;
+                    if (this.checked) {
+                        label.classList.add('selected');
+                        selectedHobbies.push(this.value);
+                    } else {
+                        label.classList.remove('selected');
+                        selectedHobbies = selectedHobbies.filter(hobby => hobby !== this.value);
+                    }
+                    
+                    // Enable generate button if at least 2 hobbies selected
+                    generateBtn.disabled = selectedHobbies.length < 2;
+                });
+            });
+        }
+
+        // Generate personalized challenges
+        function generateChallenges() {
+            if (selectedHobbies.length < 2) {
+                alert('Please select at least 2 interests to generate personalized challenges.');
+                return;
+            }
+
+            const challengesContainer = document.getElementById('challenges-container');
+            challengesContainer.innerHTML = '';
+
+            // Generate 2-3 challenges per selected hobby, max 8 total
+            let allChallenges = [];
+            selectedHobbies.forEach(hobby => {
+                if (challengeDatabase[hobby]) {
+                    const hobbyChallenges = challengeDatabase[hobby].slice(0, 2);
+                    allChallenges.push(...hobbyChallenges);
+                }
+            });
+
+            // Shuffle and limit to 6 challenges
+            allChallenges = allChallenges.sort(() => Math.random() - 0.5).slice(0, 6);
+
+            allChallenges.forEach((challenge, index) => {
+                const challengeCard = document.createElement('div');
+                challengeCard.className = 'challenge-card';
+                challengeCard.innerHTML = `
+                    <div class="challenge-header">
+                        <h4>${challenge.icon} ${challenge.title}</h4>
+                        <span class="difficulty-badge difficulty-${challenge.difficulty}">${challenge.difficulty.toUpperCase()}</span>
+                    </div>
+                    <p>${challenge.description}</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                        <small style="color: #666;">Duration: ${challenge.duration}</small>
+                        <label style="display: flex; align-items: center; cursor: pointer;">
+                            <input type="checkbox" value="${index}" style="margin-right: 8px;"> Select this goal
+                        </label>
+                    </div>
+                `;
+                
+                challengeCard.querySelector('input[type="checkbox"]').addEventListener('change', function() {
+                    if (this.checked) {
+                        challengeCard.classList.add('selected');
+                    } else {
+                        challengeCard.classList.remove('selected');
+                    }
+                });
+                
+                challengesContainer.appendChild(challengeCard);
+            });
+
+            // Store challenges for later use
+            window.currentChallenges = allChallenges;
+
+            // Show challenges section
+            document.getElementById('generated-challenges').classList.remove('hidden');
+        }
+
+        // Save selected goals
+        function saveGoals() {
+            const selectedCheckboxes = document.querySelectorAll('#challenges-container input[type="checkbox"]:checked');
+            
+            if (selectedCheckboxes.length === 0) {
+                alert('Please select at least one challenge to save as your goal.');
+                return;
+            }
+
+            userGoals = [];
+            selectedCheckboxes.forEach(checkbox => {
+                const challengeIndex = parseInt(checkbox.value);
+                const challenge = window.currentChallenges[challengeIndex];
+                userGoals.push({
+                    ...challenge,
+                    startDate: new Date(),
+                    completed: false,
+                    progress: 0
+                });
+            });
+
+            // Update goals display
+            document.getElementById('goals-achieved').textContent = `0 of ${userGoals.length} goals completed`;
+
+            // Show success message
+            alert(`Success! You've set ${userGoals.length} wellness goals. Your personalized challenges are now active!`);
+
+            // Go back to progress section
+            backToProgress();
+        }
+
+        // Regenerate challenges
+        function regenerateChallenges() {
+            generateChallenges();
+        }
+
+        // Back to progress
+        function backToProgress() {
+            hideAllSections();
+            document.getElementById('progress-section').classList.remove('hidden');
+        }
+
+        // Updated hideAllSections function
+        function hideAllSections() {
+            document.getElementById('dashboard-section').style.display = 'none';
+            document.getElementById('quiz-intro').classList.remove('active');
+            document.getElementById('quiz').classList.remove('active');
+            document.getElementById('results').classList.remove('active');
+            document.getElementById('exercises-section').style.display = 'none';
+            document.getElementById('chatbot-section').style.display = 'none';
+            document.getElementById('counselor-section').style.display = 'none';
+            document.getElementById('admin-dashboard').style.display = 'none';
+            document.getElementById('peer-support-section').classList.add('hidden');
+            document.getElementById('story-sharing-section').classList.add('hidden');
+            document.getElementById('resources-section').classList.add('hidden');
+            document.getElementById('articles-section').classList.add('hidden');
+            document.getElementById('progress-section').classList.add('hidden');
+            document.getElementById('goal-setting-section').classList.add('hidden');
+        }
+
+        // Chat functionality with AI integration
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (message) {
+                addChatMessage(message, 'user');
+                input.value = '';
+                
+                // Show typing indicator
+                addTypingIndicator();
+                
+                try {
+                    // Replace this with your chosen AI service
+                    const aiResponse = await getAIResponse(message);
+                    removeTypingIndicator();
+                    addChatMessage(aiResponse, 'bot');
+                } catch (error) {
+                    removeTypingIndicator();
+                    addChatMessage("I'm having trouble connecting right now. Please try again or contact a mental health professional if you need immediate support.", 'bot');
+                }
+            }
+        }
+
+        // Example AI integration (replace with your chosen service)
+        async function getAIResponse(userMessage) {
+            // Option 1: OpenAI API (requires API key and server-side proxy for security)
+            /*
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: userMessage })
+            });
+            const data = await response.json();
+            return data.response;
+            */
+            
+            // Option 2: For demo purposes, enhanced responses based on keywords
+            return getContextualResponse(userMessage);
+        }
+
+        function getContextualResponse(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            // Mental health specific responses
+            if (lowerMessage.includes('depressed') || lowerMessage.includes('sad')) {
+                return "I hear that you're feeling sad or depressed. These feelings can be really difficult to cope with. Have you been experiencing this for a while? It might be helpful to speak with a mental health professional who can provide personalized support.";
+            }
+            
+            if (lowerMessage.includes('anxious') || lowerMessage.includes('anxiety') || lowerMessage.includes('worried')) {
+                return "Anxiety can feel overwhelming. Some people find breathing exercises helpful - try breathing in for 4 counts, holding for 4, and exhaling for 4. However, if anxiety is interfering with your daily life, I'd recommend speaking with a counselor.";
+            }
+            
+            if (lowerMessage.includes('sleep') || lowerMessage.includes('insomnia')) {
+                return "Sleep difficulties can really impact how we feel. Some helpful sleep hygiene tips include keeping a consistent bedtime, avoiding screens before bed, and creating a calm environment. If sleep problems persist, consider talking to a healthcare provider.";
+            }
+            
+            if (lowerMessage.includes('stress') || lowerMessage.includes('overwhelmed')) {
+                return "Feeling stressed or overwhelmed is very common. Breaking tasks into smaller steps, practicing mindfulness, or talking to someone you trust can help. What specific situations are causing you the most stress?";
+            }
+            
+            if (lowerMessage.includes('help') || lowerMessage.includes('support')) {
+                return "I'm here to provide support and information. For professional help, you can contact the National Suicide Prevention Lifeline at 988, or speak with a licensed therapist. What kind of support are you looking for right now?";
+            }
+            
+            // Default supportive response
+            return "Thank you for sharing that with me. It takes courage to talk about difficult feelings. Can you tell me more about what's been on your mind? Remember, if you're in crisis, please call 988 or contact emergency services.";
+        }
+
+        function addTypingIndicator() {
+            const container = document.getElementById('chat-container');
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typing-indicator';
+            typingDiv.className = 'chat-message bot-message';
+            typingDiv.innerHTML = '<strong>AI Counselor:</strong> <em>typing...</em>';
+            container.appendChild(typingDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) {
+                indicator.remove();
+            }
+        }
+
+        function addChatMessage(message, sender) {
+            const container = document.getElementById('chat-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${sender}-message`;
+            
+            if (sender === 'bot') {
+                messageDiv.innerHTML = `<strong>AI Counselor:</strong> ${message}`;
+            } else {
+                messageDiv.innerHTML = `<strong>You:</strong> ${message}`;
+            }
+            
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Dashboard is ready
+        });
+    </script>
+</body>
+</html>
